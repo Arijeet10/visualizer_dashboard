@@ -3,3 +3,10 @@
 @tailwind utilities;
 
 
+.bar {
+    fill: steelblue;
+    transition: fill 0.3s;
+  }
+  .bar:hover {
+    fill: orange;
+  }
