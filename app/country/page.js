@@ -1,40 +1,58 @@
 "use client";
-
 import { getData } from "../data"
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import CountryChart from "./CountryChart";
+import { useState } from "react";
 
 
 const Country = () => {
+
     //get large data from api
     const {sample}= getData;
+    //get the list of countries from the data sample
+    const countryNames=sample.map((val)=>{
+      return val.country;//this returns empty strings too
+    })
+    const names=countryNames.filter((name)=>name!="")//filtering out the empty strings
+    const newNames=[...new Set(names)];//removing duplicate values of countries
+
+    const [countryData, setCountryData] = useState([])//to store country data
+
+    const [countryPointer, setCountryPointer] = useState("")//to know which country button is clicked
+
+
+    const handleClick=(val)=>{
+      setCountryPointer(val)//set the value to the particular country button clicked
+      setCountryData(
+        sample.map((val)=>{
+          if(val.country===countryPointer){
+            return val;
+          }
+        })
+      )
+      
+    }
+
+    
+    
+    
   return (
     <>
         <div>
             Country
         </div>
-
-        {/* visualizing intensity,likelihood and relevance in charts with respect to Country filter */}
-        <BarChart
-          width={500}
-          height={300}
-          data={sample}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          {/* <CartesianGrid strokeDasharray="3 3" /> */}
-          <XAxis dataKey="" />
-          <YAxis dataKey="intensity" />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="intensity" stackId="a" fill="#db9f63" />
-          <Bar dataKey="likelihood" stackId="a" fill="#87db63" />
-          <Bar dataKey="relevance" stackId="a" fill="#63b3db" />
-        </BarChart>
+        {newNames.map((val,i)=>{
+          return (
+            <button 
+              className="m-2 p-2 border"
+              onClick={()=>{
+                handleClick(val)
+                }}
+            >
+              {val}
+            </button>
+          )
+        })}
+        <CountryChart data={countryData} />
     </>
   )
 }
